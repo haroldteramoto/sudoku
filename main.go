@@ -74,21 +74,21 @@ func main() {
 }
 
 func solveSudoku(puzzle *[9][9]int) {
-	start := time.Now()
 	unknowns := make([]Unknown, 0, 81)
+	start := time.Now()
+	cur := 0
 	for i := 0; i < 9; i++ {
 		for j := 0; j < 9; j++ {
 			if puzzle[i][j] == 0 {
 				unknowns = append(unknowns, Unknown{i, j})
+				for cur < len(unknowns) {
+					if solve(puzzle, cur, unknowns) {
+						cur++
+					} else {
+						cur--
+					}
+				}
 			}
-		}
-	}
-	cur := 0
-	for cur < len(unknowns) {
-		if solve(puzzle, cur, unknowns) {
-			cur++
-		} else {
-			cur--
 		}
 	}
 	elapsed := time.Since(start)
@@ -96,7 +96,6 @@ func solveSudoku(puzzle *[9][9]int) {
 	for i := range puzzle {
 		fmt.Println(puzzle[i])
 	}
-
 }
 
 func solve(puzzle *[9][9]int, cur int, unknowns []Unknown) bool {
