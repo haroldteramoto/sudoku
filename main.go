@@ -103,28 +103,19 @@ func solve(puzzle *[9][9]int, cur int, unknowns []Unknown) bool {
 	unk := unknowns[cur]
 	value := puzzle[unk.x][unk.y] + 1
 	for i := value; i <= 9; i++ {
-		if isValid(puzzle, unk.x, unk.y, i) {
-			puzzle[unk.x][unk.y] = i
-			return true
+		valid := true
+		for j := 0; j < 9; j++ {
+			if puzzle[unk.x][j] == i || puzzle[j][unk.y] == i || puzzle[(int(unk.x/3)*3)+(j/3)][(int(unk.y/3)*3)+(j%3)] == i {
+				valid = false
+				break
+			}
 		}
+		if !valid {
+			continue
+		}
+		puzzle[unk.x][unk.y] = i
+		return true
 	}
 	puzzle[unk.x][unk.y] = 0
 	return false
-}
-
-func isValid(puzzle *[9][9]int, row int, col int, value int) bool {
-	for i := 0; i < 9; i++ {
-		if puzzle[row][i] == value {
-			return false
-		}
-		if puzzle[i][col] == value {
-			return false
-		}
-		var section_row = int(row / 3)
-		var section_column = int(col / 3)
-		if puzzle[(section_row*3)+(i/3)][(section_column*3)+(i%3)] == value {
-			return false
-		}
-	}
-	return true
 }
